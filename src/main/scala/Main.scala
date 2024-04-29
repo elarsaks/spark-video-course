@@ -1,5 +1,6 @@
 package sparkvideocourse
 
+import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object Main {
@@ -17,5 +18,14 @@ object Main {
 
     df.show()
     df.printSchema()
+
+    df.select("Date", "Open", "Close").show
+    val column = df("Date")
+    col("Date")
+    import spark.implicits._
+    $"date"
+
+    // df.select(col("Date"), $"Open", df("Close")).show()
+    df.select(column, $"Open", df("Close")).show()
   }
 }
