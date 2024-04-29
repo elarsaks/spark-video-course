@@ -1,7 +1,8 @@
 package sparkvideocourse
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions.{col, current_timestamp, expr, lit, year}
+import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions.{col, current_timestamp, expr, lit, row_number, year}
 import org.apache.spark.sql.{DataFrame, SparkSession, functions}
 // import org.apache.spark.sql.functions._
 // import org.apache.spark.sql.types.StringType
@@ -44,15 +45,20 @@ object Main {
       .sort($"maxClose".desc)
       .show()
 
+    val window = Window.partitionBy(year($"date").as("year")).orderBy($"close".desc)
+    stockData
+      .withColumn("rank", row_number().over(window))
+      .filter($"rank" === 1)
+      .sort($"close".desc)
+      .explain(extended = true)
+
+
+    /*
     stockData
       .groupBy(year($"date").as("year"))
       .max("close", "high")
       .show()
 
-
-
-
-    /*
     val stockData = df.select(remameColumns: _*)
       .withColumn("diff", col("close") - col("open"))
       .filter(col("close") > col("open") * 1.1)
