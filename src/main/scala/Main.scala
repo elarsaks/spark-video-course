@@ -1,6 +1,7 @@
 package sparkvideocourse
 
 import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object Main {
@@ -19,6 +20,18 @@ object Main {
     df.show()
     df.printSchema()
 
+    val column = df("Open")
+    val newColumn = column + (2.0) // column.plus(2.0)
+    val columnString =  column.cast(StringType)
+
+    df.select(column, newColumn, columnString)
+      .filter(newColumn > 2.0)
+      .filter(newColumn > column)
+      .filter(newColumn === column)
+      .show()
+
+
+    /*
     df.select("Date", "Open", "Close").show
     val column = df("Date")
     col("Date")
@@ -27,5 +40,6 @@ object Main {
 
     // df.select(col("Date"), $"Open", df("Close")).show()
     df.select(column, $"Open", df("Close")).show()
+    */
   }
 }
