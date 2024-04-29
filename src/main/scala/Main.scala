@@ -26,8 +26,8 @@ object Main {
 
     df.select(column, newColumn, columnString)
       .filter(newColumn > 2.0)
-      .filter(newColumn > column)
-      .filter(newColumn === column)
+      .filter(newColumn > column).as("OpenIncreasedBy2")
+      .filter(newColumn === column).as("OpenAsString")
       .show()
 
 
