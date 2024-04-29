@@ -1,8 +1,11 @@
 package sparkvideocourse
 
-import org.apache.spark.sql.functions.{col,  current_timestamp, expr, lit}
-import org.apache.spark.sql.types.StringType
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.{col, current_timestamp, expr, lit, year}
 import org.apache.spark.sql.{DataFrame, SparkSession, functions}
+// import org.apache.spark.sql.functions._
+// import org.apache.spark.sql.types.StringType
+// import org.apache.spark.sql.catalyst.dsl.expressions.StringToAttributeConversionHelper
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -28,9 +31,28 @@ object Main {
       col("Close").as("close"),
       col("Adj Close").as("adjClose"),
       col("Volume").as("volume"),
-      col("Date").as("date"),
     )
 
+
+    val stockData = df.select(remameColumns: _*)
+
+    import spark.implicits._
+
+    stockData
+      .groupBy(year($"date").as("year"))
+      .agg(functions.max($"close").as("maxClose"), functions.avg($"close").as("avgClose"))
+      .sort($"maxClose".desc)
+      .show()
+
+    stockData
+      .groupBy(year($"date").as("year"))
+      .max("close", "high")
+      .show()
+
+
+
+
+    /*
     val stockData = df.select(remameColumns: _*)
       .withColumn("diff", col("close") - col("open"))
       .filter(col("close") > col("open") * 1.1)
@@ -39,10 +61,6 @@ object Main {
 
 
     // df.select(df.columns.map(c => col(c).as(c.toLowerCase())): _*).show()
-
-
-
-    /*
 
     val timestampFromExpression = expr("cast(current_timestamp() as string) as timestampExpression")
     val timestampFromFunctions = current_timestamp().cast(StringType)
