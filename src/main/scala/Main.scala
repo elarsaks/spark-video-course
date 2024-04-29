@@ -1,6 +1,6 @@
 package sparkvideocourse
 
-import org.apache.spark.sql.functions.{col, lit}
+import org.apache.spark.sql.functions.{col, current_timestamp, expr, lit}
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.{DataFrame, SparkSession, functions}
 
@@ -20,6 +20,17 @@ object Main {
     df.show()
     df.printSchema()
 
+    val timestampFromExpression = expr("cast(current_timestamp() as string) as timestampExpression")
+    val timestampFromFunctions = current_timestamp().cast(StringType)
+
+    df.select(timestampFromExpression, timestampFromFunctions).show()
+    df.selectExpr("cast(Date as string)", "Open + 1.0", "current_timestamp").show()
+
+    df.createTempView("df")
+    spark.sql("select * from df").show()
+
+
+    /*
     val column = df("Open")
     val newColumn = column + (2.0) // column.plus(2.0)
     val columnString =  column.cast(StringType)
@@ -37,7 +48,6 @@ object Main {
       .show()
 
 
-    /*
     df.select("Date", "Open", "Close").show
     val column = df("Date")
     col("Date")
