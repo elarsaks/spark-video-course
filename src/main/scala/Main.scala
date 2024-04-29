@@ -1,8 +1,8 @@
 package sparkvideocourse
 
-import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.functions.{col, lit}
 import org.apache.spark.sql.types.StringType
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession, functions}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -28,6 +28,12 @@ object Main {
       .filter(newColumn > 2.0)
       .filter(newColumn > column).as("OpenIncreasedBy2")
       .filter(newColumn === column).as("OpenAsString")
+      .show()
+
+    val litCol = lit(2.0)
+    val newColumnString = functions.concat(columnString, lit("Hello World"))
+
+    df.select(column, newColumn, columnString, newColumnString)
       .show()
 
 
