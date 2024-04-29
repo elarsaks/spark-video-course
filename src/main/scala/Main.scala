@@ -1,6 +1,6 @@
 package sparkvideocourse
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -10,7 +10,7 @@ object Main {
       .master("local[*]")
       .getOrCreate()
 
-    val df = spark.read
+    val df: DataFrame = spark.read
       .option("header", value = true)
       .option("inferSchema", value = true)
       .csv("data/AAPL.csv")
