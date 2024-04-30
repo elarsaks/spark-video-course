@@ -34,30 +34,29 @@ object Main {
       col("Volume").as("volume"),
     )
 
-
     val stockData = df.select(remameColumns: _*)
 
-    import spark.implicits._
+    val highestClosingPricesPerYear = highestClosingPricesPerYear(stockData)
+  }
 
-    stockData
-      .groupBy(year($"date").as("year"))
-      .agg(functions.max($"close").as("maxClose"), functions.avg($"close").as("avgClose"))
-      .sort($"maxClose".desc)
-      .show()
-
+  def highestClosingPricesPerYear(df: DataFrame): Unit = {
+    import df.sparkSession.implicits._
     val window = Window.partitionBy(year($"date").as("year")).orderBy($"close".desc)
-    stockData
+    df
       .withColumn("rank", row_number().over(window))
       .filter($"rank" === 1)
       .sort($"close".desc)
       .explain(extended = true)
   }
 
-  def add(x: Int, y: Int): Int = x + y
-
-
     /*
     OTHER EXERCISERS & CONCEPTS
+
+      stockData
+      .groupBy(year($"date").as("year"))
+      .agg(functions.max($"close").as("maxClose"), functions.avg($"close").as("avgClose"))
+      .sort($"maxClose".desc)
+      .show()
 
     stockData
       .groupBy(year($"date").as("year"))
