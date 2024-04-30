@@ -51,9 +51,14 @@ object Main {
       .filter($"rank" === 1)
       .sort($"close".desc)
       .explain(extended = true)
+  }
+
+  def add(x: Int, y: Int): Int = x + y
 
 
     /*
+    OTHER EXERCISERS & CONCEPTS
+
     stockData
       .groupBy(year($"date").as("year"))
       .max("close", "high")
@@ -102,6 +107,6 @@ object Main {
 
     // df.select(col("Date"), $"Open", df("Close")).show()
     df.select(column, $"Open", df("Close")).show()
-    */
   }
+     */
 }
